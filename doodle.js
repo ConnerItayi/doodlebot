@@ -1,19 +1,24 @@
-var botid = "[your bot ID, NOT your app ID]";
-var bottoken = "[your bot token]";
-var devID = "[YOUR discord ID]";
+var fs = require('fs')
+  , ini = require('ini')
+
+var config = ini.parse(fs.readFileSync('./config/config.ini', 'utf-8'))
+
+
+var botid = config.Credentials.BotID;
+var bottoken = config.Credentials.Token;
+var devID = config.Credentials.UserID;
 //NOT your username#xxxx ID, your 17-digit ID you get when turning on dev mode and right clicking on your name and pressing copy ID
 //this is used for commands that only the developer should use
 
 
-var fs = require("fs");
 var discord = require("discord.js");
 var url = require("url");
 var ccap = require("ccap");
 //readyup.js is just a small little script I wrote to execute a function once multiple async functions have finished.
 //ready.wait() tells it that we're waiting for a function, and ready.done() tells it that the function has completed.
-var ready = require("./readyup.js");
+var ready = require("./doodle/readyup.js");
 //commonly used strings
-var texts = require("./texts.js");
+var texts = require("./doodle/texts.js");
 
 var client = new discord.Client();
 
@@ -60,7 +65,7 @@ ready.init(readyup);
 console.log("Loading server configurations.");
 ready.wait();
 //servers.js is where we store all our server configurations
-fs.readFile("./servers.js", "utf8", function(err, data){
+fs.readFile("./doodle/servers.js", "utf8", function(err, data){
 	if (err) {
 		console.log(err.message);
 		process.exit();
@@ -86,7 +91,7 @@ client.on('message', function(message){
 	if (message.channel.type == "dm"){console.log("[DM ] " + message.author + " @" + message.author.username + " : " +message.content);};
 	
 	//message was a command, change this '%' if you want to change the command token
-	if (message.content[0] == '%') {
+	if (message.content[0] == config.Bot.Prefix) {
 		//log commands
 		console.log("[CMD] " + message.author + " @" + message.author.username + " : " +message.content);
 		//get our command arguments
@@ -147,7 +152,6 @@ commands = {
 		saveData();
 	},
 	//This command allows you to view past versions of an edited message
-	/*
 	snoop : function(a,m){
 		if(a[1] == undefined || a[1] == ""){
 			m.reply("You need to supply a message ID to snoop!");
@@ -163,15 +167,14 @@ commands = {
 				m.channel.sendMessage(tt);
 			})
 			.catch(function(err){m.channel.sendMessage("Error:\n"+err.message);});
-	},*/
-	
+	},
 	//display a manual page
 	help : function(a,m){
 		if(a[1] == undefined || a[1] == ""){
 			var msg = 	".\n"+
 						"**Help Manual**\n"+
-						"To view a specific manual article use `%help (page name)` (without parentheseis).\n"+
-						"Usages are given as: `%command (required argument) [optional argument]`\n\n"+
+						"To view a specific manual article use `"+config.Bot.Prefix+"help (page name)` (without parentheseis).\n"+
+						"Usages are given as: `"+config.Bot.Prefix+"command (required argument) [optional argument]`\n\n"+
 						"**Available manual pages**\n"+
 						"(Commands are listed in `code blocks`, non-command pages are *italic*)\n";
 			for (i in manual) {
