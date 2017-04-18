@@ -4,10 +4,9 @@ A helpful bot that adds captchas to discord, and a few other things
 ## What are the requirements for this?
 Node and NPM
 The installation commands for the requirements are:
-`curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-sudo apt-get install -y nodejs
-
-sudo apt-get install -y npm`
+`curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -`
+`sudo apt-get install -y nodejs`
+`sudo apt-get install -y npm`
 
 After Node and NPM are installed, you need to install these:
 `sudo npm install  discord.js node-opus ini ccap`
