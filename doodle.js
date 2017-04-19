@@ -36,7 +36,7 @@ function checkDev(message){
 	return ((message.author.id) == devID);
 }
 
-//Check if the sender of the message is the owner of the server or the bot developer
+//Check if the sender of the message is the owner of the server or is the bot developer
 function checkOwner(message){
 	if(checkDev(message)){return true;};
 	return ((message.author.id == message.guild.owner.id));
