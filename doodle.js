@@ -44,7 +44,6 @@ function checkOwner(message){
 
 //Check if the sender of the message has the designated admin role or is the server owner or is the bot developer
 function checkAdmin(message){
-	if(checkDev(message)){return true;};
 	if(checkOwner(message)){return true;};
 	if(message.member == undefined || message.member == null){return false;};
 	if(servers[message.guild.id] == undefined){return false;};
