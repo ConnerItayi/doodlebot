@@ -36,13 +36,15 @@ function checkDev(message){
 	return ((message.author.id) == devID);
 }
 
-//Check if the sender of the message is the owner of the server
+//Check if the sender of the message is the owner of the server or the bot developer
 function checkOwner(message){
+	if(checkDev(message)){return true;};
 	return ((message.author.id == message.guild.owner.id));
 }
 
-//Check if the sender of the message has the designated admin role or is the server owner
+//Check if the sender of the message has the designated admin role or is the server owner or is the bot developer
 function checkAdmin(message){
+	if(checkDev(message)){return true;};
 	if(checkOwner(message)){return true;};
 	if(message.member == undefined || message.member == null){return false;};
 	if(servers[message.guild.id] == undefined){return false;};
