@@ -1,5 +1,5 @@
 # doodlebot
-A helpful bot that adds captchas to discord, and a few other things
+A helpful bot that adds captchas to discord, and a few other things made by Haicat and mostly made slightly more end-user friendly by ConnerItayi.
 
 ## What are the requirements for this?
 Node, NPM, Discord.JS, Node-Opus, INI, and CCAP.
