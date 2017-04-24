@@ -7,6 +7,8 @@ var config = ini.parse(fs.readFileSync('./config/config.ini', 'utf-8'))
 var botid = config.Credentials.BotID;
 var bottoken = config.Credentials.Token;
 var devID = config.Credentials.UserID;
+var adminRole = config.Roles.AdminRole
+var captchaRole = config.Roles.CaptchaRole
 //NOT your username#xxxx ID, your 17-digit ID you get when turning on dev mode and right clicking on your name and pressing copy ID
 //this is used for commands that only the developer should use
 
@@ -47,8 +49,8 @@ function checkAdmin(message){
 	if(checkOwner(message)){return true;};
 	if(message.member == undefined || message.member == null){return false;};
 	if(servers[message.guild.id] == undefined){return false;};
-	if(servers[message.guild.id].adminRole == undefined){return false;};
-	return message.member.roles.has(servers[message.guild.id].adminRole);
+	if(adminRole == undefined){return false;};
+	return message.member.roles.has(adminRole);
 }
 
 
@@ -218,29 +220,29 @@ commands = {
 		var rolename = m.content.substr(a[0].length).trim();
 		if(servers[m.guild.id] == undefined){servers[m.guild.id] = {};};
 		if(rolename == ""){
-			if(servers[m.guild.id].adminRole == undefined){
+			if(m.guild.roles.get(adminRole) == undefined){
 				m.channel.sendMessage("This server does not have an admin role defined.");
 				return;
 			}
-			m.channel.sendMessage("The role for using admin commands is currently `"+m.guild.roles.get(servers[m.guild.id].adminRole).name+"`.");
+			m.channel.sendMessage("The role for using admin commands is currently `"+m.guild.roles.get(adminRole).name+"`.");
 			return;
 		}
 		if(!checkOwner(m)){
 			m.reply(texts.noPerm);
 			return;
 		};
-		
 		var found = false;
 		var role = undefined;
 		m.guild.roles.forEach(function(v,i){
 			if(v.name == rolename.trim()){
-				servers[m.guild.id].adminRole = v.id;
+				config.Roles.AdminRole = v.id
+				fs.writeFileSync('./config/config.ini', ini.stringify(config, { section: '' }))
 				found = true;
 				role = v;
 			}
 		});
 		if(found){
-			m.channel.sendMessage("Okay, the bot admin role is now `"+role.name+"`.");
+			m.channel.sendMessage("Okay, the bot admin role is now `"+role.name+"`, please restart to see changes.");
 			return;
 		};
 		m.channel.sendMessage("I could not find any role named `"+rolename+"`.");
@@ -252,11 +254,11 @@ commands = {
                 var rolename = m.content.substr(a[0].length).trim();
                 if(servers[m.guild.id] == undefined){servers[m.guild.id] = {};};
                 if(rolename == ""){
-                        if(servers[m.guild.id].captchaRole == undefined){
+                        if(m.guild.roles.get(captchaRole) == undefined){
                                 m.channel.sendMessage("This server does not have a captcha role defined.");
                                 return;
                         }
-                        m.channel.sendMessage("The role assigned upon completing a captcha is currently `"+m.guild.roles.get(servers[m.guild.id].captchaRole).name+"`.");
+                        m.channel.sendMessage("The role assigned upon completing a captcha is currently `"+m.guild.roles.get(captchaRole).name+"`.");
                         return;
                 }
                 if(!checkAdmin(m)){
@@ -268,13 +270,14 @@ commands = {
                 var role = undefined;
                 m.guild.roles.forEach(function(v,i){
                         if(v.name == rolename.trim()){
-                                servers[m.guild.id].captchaRole = v.id;
+				config.Roles.CaptchaRole = v.id
+                                fs.writeFileSync('./config/config.ini', ini.stringify(config, { section: '' }))
                                 found = true;
                                 role = v;
                         }
                 });
                 if(found){
-                        m.channel.sendMessage("Okay, the captcha role is now `"+role.name+"`.");
+                        m.channel.sendMessage("Okay, the captcha role is now `"+role.name+"`, please restart to see changes");
                         return;
                 };
                 m.channel.sendMessage("I could not find any role named `"+rolename+"`.");
@@ -298,7 +301,7 @@ commands = {
 			return;
 		}
 		if(guess == captchas[m.author.id]){
-			m.member.addRole(servers[m.guild.id].captchaRole).catch(
+			m.member.addRole(captchaRole).catch(
 					function(e){
 						console.log("Error in solve: "+e.message+"\n(They probably already have the verified role.)");
 					}
