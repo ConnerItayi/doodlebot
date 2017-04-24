@@ -23,3 +23,7 @@ this nice guide: https://github.com/Just-Some-Bots/MusicBot/wiki/FAQ#how-do-i-ad
 ## Optional Things
 
 Optionally, you can change the command prefix in `config.ini`, but as default it is `%`
+
+## Roles
+
+The roles section of `config.ini` is for the commands `setadminrole` and `setcaptcharole`, use those commands to set those configs.
